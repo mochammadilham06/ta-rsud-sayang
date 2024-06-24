@@ -9,15 +9,9 @@ import { statusClassMap } from '@/constant/initialValue';
 import Dropdown from '@/components/Dropdown';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/utils';
-
-export interface TaskRecord {
-  task_id: string;
-  type: string;
-  user: string;
-  created_by: string;
-  status: string;
-  approved_by?: string;
-}
+import { getCookie } from 'cookies-next';
+import { GetServerSideProps } from 'next';
+import { TaskRecord } from '@/types/task';
 
 export default function CompletedTaskWorkflow() {
   const dispatch = useDispatch();
@@ -25,7 +19,7 @@ export default function CompletedTaskWorkflow() {
     dispatch(setPageTitle('Medical Checkup Workflow'));
   });
   const { user } = useAuth();
-  const status = ['Completed'];
+  const status = ['Completed', 'Rejected'];
   const { dataTask, errorTask, loadingTask } = UseSubsciptionPassangers(status, user?.user_id);
   const router = useRouter();
 
@@ -59,7 +53,7 @@ export default function CompletedTaskWorkflow() {
               noRecordsText="No results match your search query"
               highlightOnHover
               className="table-hover whitespace-nowrap"
-              records={dataTask?.data as TaskRecord[]}
+              records={recordsData as TaskRecord[]}
               columns={[
                 { accessor: 'task_id', title: 'Task ID' },
                 { accessor: 'type', title: 'Task Type' },
@@ -126,3 +120,17 @@ export default function CompletedTaskWorkflow() {
     </Fragment>
   );
 }
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};

@@ -75,6 +75,7 @@ export const getTaskWithId = gql`
       }
       images_rel {
         images
+        description
       }
     }
   }
@@ -114,6 +115,16 @@ export const postImages = gql`
         }
         task_id
       }
+    }
+  }
+`;
+
+export const getImagesById = gql`
+  query MyQuery($task_id: uuid = "") {
+    data: rsud_sayang_images(where: { task_id: { _eq: $task_id } }) {
+      task_id
+      images
+      description
     }
   }
 `;

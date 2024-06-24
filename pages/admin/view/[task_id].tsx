@@ -4,13 +4,18 @@ import LoadingOverlay from '@/components/loading';
 import { showResponseModal } from '@/components/response-alert';
 import { storage } from '@/config/firebase';
 import { setPageTitle } from '@/store/themeConfigSlice';
+import { getCookie } from 'cookies-next';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { FormEvent, Fragment } from 'react';
 import { useEffect, useState } from 'react';
 // import 'file-upload-with-preview/dist/file-upload-with-preview.min.css';
 import ImageUploading, { ImageListType } from 'react-images-uploading';
 import { useDispatch } from 'react-redux';
+import 'react-quill/dist/quill.snow.css';
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function UploadResults() {
   const dispatch = useDispatch();
@@ -27,6 +32,7 @@ export default function UploadResults() {
   });
 
   const [images, setImages] = useState<any>([]);
+  const [form, setForm] = useState<any>('');
   const maxNumber = 69;
 
   const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
@@ -58,6 +64,7 @@ export default function UploadResults() {
           objects: {
             task_id,
             images: imageUrl,
+            description: form,
           },
         },
       }).then(() => {
@@ -110,6 +117,10 @@ export default function UploadResults() {
               )}
             </ImageUploading>
             {images.length === 0 ? <img src="/assets/images/file-preview.svg" className="m-auto w-full max-w-md" alt="" /> : ''}
+            <div>
+              <label htmlFor="description">Description</label>
+              <ReactQuill theme="snow" value={form} onChange={setForm} />
+            </div>
           </div>
         </div>
       </div>
@@ -122,3 +133,18 @@ export default function UploadResults() {
     </Fragment>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};

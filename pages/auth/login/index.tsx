@@ -58,8 +58,11 @@ const LoginPage = () => {
 
   return (
     <Fragment>
-      <div className="flex min-h-screen items-center justify-center bg-[url('/assets/images/map.svg')] bg-cover bg-center dark:bg-[url('/assets/images/map-dark.svg')]">
+      <div className="flex min-h-screen items-center justify-center bg-[url('/assets/images/blur-bg-rs.jpg')] bg-cover bg-center dark:bg-[url('/assets/images/blur-bg-rs.jpg')]">
         <div className="panel m-6 w-full max-w-lg sm:w-[480px]">
+          <div className="flex justify-center py-3">
+            <img className="h-24 w-24" src="/assets/images/rsud.png" alt="logo" />
+          </div>
           <h2 className="mb-3 text-2xl font-bold">Sign In</h2>
           <p className="mb-7">Enter your email and password to login</p>
           <form className="space-y-5" onSubmit={handleSubmit}>

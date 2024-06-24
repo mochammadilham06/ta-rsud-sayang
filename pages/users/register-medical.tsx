@@ -10,18 +10,12 @@ import { useModal } from '@/hooks/use-modal';
 import { useFormik } from 'formik';
 import Select from 'react-select';
 import { showResponseModal } from '@/components/response-alert';
-import { regisValidation, statusClassMap } from '@/constant/initialValue';
+import { options, regisValidation, statusClassMap } from '@/constant/initialValue';
 import { isNull } from 'lodash';
 import { useAuth } from '@/utils';
-
-export interface TaskRecord {
-  task_id: string;
-  type: string;
-  user: string;
-  created_by: string;
-  status: string;
-  approved_by?: string;
-}
+import { getCookie } from 'cookies-next';
+import { GetServerSideProps } from 'next';
+import { TaskRecord } from '@/types/task';
 
 export default function RegisterMedicalCheckup() {
   const dispatch = useDispatch();
@@ -34,7 +28,7 @@ export default function RegisterMedicalCheckup() {
 
   const { dataTask, errorTask, loadingTask } = UseSubsciptionPassangers(status, user?.user_id);
   const { postTasks, error, loading } = usePostTask();
-  const [modalState, showModal, hideModal, confirmModal] = useModal();
+  const [modalState, showModal, hideModal] = useModal();
 
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -146,17 +140,15 @@ export default function RegisterMedicalCheckup() {
 
       {/* modal */}
       <Modal open={modalState.open} onClose={hideModal} onConfirm={handleSubmit} title={modalState.title} onLoadingAction={loading} disableAction={loading || !isValid || isNull(values.type)}>
-        <form className="space-y-5">
+        <form className="space-y-5 pb-10 pt-2">
           <div>
             <label htmlFor="type">Tipe Rekam Medis</label>
 
             <Select
               id="type"
+              className="overflow-visible"
               placeholder="Pilih tipe"
-              options={[
-                { value: 'radiologi', label: 'Radiologi' },
-                { value: 'rekam medis', label: 'Rekam Medis' },
-              ]}
+              options={options}
               name="type"
               onChange={(e) => {
                 setFieldValue('type', e?.value);
@@ -173,3 +165,18 @@ export default function RegisterMedicalCheckup() {
     </Fragment>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};

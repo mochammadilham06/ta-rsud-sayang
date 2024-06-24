@@ -9,18 +9,9 @@ import { statusClassMap } from '@/constant/initialValue';
 import Dropdown from '@/components/Dropdown';
 import { useRouter } from 'next/router';
 import { isNull } from 'lodash';
-
-export interface TaskRecord {
-  task_id: string;
-  type: string;
-  user: string;
-  created_by: string;
-  status: string;
-  approved_by?: string;
-  images_rel?: {
-    images: string;
-  };
-}
+import { GetServerSideProps } from 'next';
+import { getCookie } from 'cookies-next';
+import { TaskRecordWithImage } from '@/types/task';
 
 export default function UploadFileContainer() {
   const dispatch = useDispatch();
@@ -65,7 +56,7 @@ export default function UploadFileContainer() {
               noRecordsText="No results match your search query"
               highlightOnHover
               className="table-hover whitespace-nowrap"
-              records={recordsData as TaskRecord[]}
+              records={recordsData as TaskRecordWithImage[]}
               columns={[
                 { accessor: 'task_id', title: 'Task ID' },
                 { accessor: 'type', title: 'Task Type' },
@@ -83,46 +74,46 @@ export default function UploadFileContainer() {
                     return <span>{record?.approved_by || '-'}</span>;
                   },
                 },
-                // {
-                //   accessor: 'action',
-                //   render: (record, index) => {
-                //     return (
-                //       <div className="dropdown">
-                //         <Dropdown
-                //           offset={[0, 5]}
-                //           placement={`${'bottom-end'}`}
-                //           button={
-                //             <svg className="h-5 w-5 opacity-70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                //               <circle cx="5" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                //               <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                //               <circle cx="19" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                //             </svg>
-                //           }
-                //         >
-                //           <ul key={index}>
-                //             {!isNull(record?.images_rel?.images) && (
-                //               <li>
-                //                 <button
-                //                   type="button"
-                //                   onClick={() => {
-                //                     handleDownload(record?.images_rel?.images);
-                //                   }}
-                //                 >
-                //                   Download
-                //                 </button>
-                //               </li>
-                //             )}
-                //             <li>
-                //               <button type="button" onClick={() => router.push(`/admin/view/${record?.task_id}`)}>
-                //                 View Detail
-                //               </button>
-                //             </li>
-                //           </ul>
-                //         </Dropdown>
-                //       </div>
-                //     );
-                //   },
-                // },
+                {
+                  accessor: 'action',
+                  render: (record, index) => {
+                    return (
+                      <div className="dropdown" key={index}>
+                        <Dropdown
+                          offset={[0, 5]}
+                          placement={`${'top-end'}`}
+                          button={
+                            <svg className="h-5 w-5 opacity-70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="5" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+                              <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+                              <circle cx="19" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+                            </svg>
+                          }
+                        >
+                          <ul>
+                            {/* {!isNull(record?.images_rel?.images) && (
+                              <li>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleDownload(record?.images_rel?.images);
+                                  }}
+                                >
+                                  Download
+                                </button>
+                              </li>
+                            )} */}
+                            <li>
+                              <button type="button" onClick={() => router.push(`/admin/view/${record?.task_id}`)}>
+                                View Detail
+                              </button>
+                            </li>
+                          </ul>
+                        </Dropdown>
+                      </div>
+                    );
+                  },
+                },
               ]}
               totalRecords={dataTask?.data?.length}
               recordsPerPage={pageSize}
@@ -141,3 +132,17 @@ export default function UploadFileContainer() {
     </Fragment>
   );
 }
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};

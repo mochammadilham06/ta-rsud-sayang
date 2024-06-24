@@ -14,14 +14,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { statusClassMap } from '@/constant/initialValue';
 import { useAuth } from '@/utils';
+import { GetServerSideProps } from 'next';
+import { getCookie } from 'cookies-next';
+import { TaskRecord } from '@/types/task';
 
-export interface TaskRecord {
-  task_id: string;
-  type: string;
-  user: string;
-  created_by: string;
-  status: string;
-  approved_by?: string;
+export interface TaskRecordNew extends TaskRecord {
   reason_progress?: string;
 }
 
@@ -113,7 +110,7 @@ export default function ManageProcess() {
               noRecordsText="No results match your search query"
               highlightOnHover
               className="table-hover whitespace-nowrap"
-              records={recordsData as TaskRecord[]}
+              records={recordsData as TaskRecordNew[]}
               columns={[
                 { accessor: 'task_id', title: 'Task ID' },
                 { accessor: 'type', title: 'Task Type' },
@@ -237,3 +234,18 @@ export default function ManageProcess() {
     </Fragment>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};

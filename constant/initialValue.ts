@@ -34,3 +34,28 @@ export const statusClassMap = {
   'In Progress': 'bg-warning',
   Rejected: 'bg-danger',
 };
+
+export const options = [
+  { value: 'Thorax Pa/Ap', label: 'Thorax Pa/Ap' },
+  { value: 'Thorax Pa/Lat', label: 'Thorax Pa/Lat' },
+  { value: 'V.Cervical ap/Lat', label: 'V.Cervical ap/Lat' },
+  { value: 'Pedis D/S', label: 'Pedis D/S' },
+  { value: 'Manus D/S', label: 'Manus D/S' },
+  { value: 'Scapula D/S', label: 'Scapula D/S' },
+  { value: 'Pelvis', label: 'Pelvis' },
+  { value: 'Mastoid S', label: 'Mastoid S' },
+  { value: 'Abdomen 3 Posisi', label: 'Abdomen 3 Posisi' },
+  { value: 'Abdomen polos', label: 'Abdomen polos' },
+  { value: 'Abdomen 2 Posisi', label: 'Abdomen 2 Posisi' },
+  { value: 'Babygram', label: 'Babygram' },
+  { value: 'Cruris D/S', label: 'Cruris D/S' },
+  { value: 'Kepala Ap/Lat', label: 'Kepala Ap/Lat' },
+  { value: 'V.Lumbosaceal', label: 'V.Lumbosaceal' },
+  { value: 'V.Thoracolumbal', label: 'V.Thoracolumbal' },
+  { value: 'V.Lumbal Ap/Lat', label: 'V.Lumbal Ap/Lat' },
+  { value: 'Waters', label: 'Waters' },
+  { value: 'Humerus Ap/Lat D/S', label: 'Humerus Ap/Lat D/S' },
+  { value: 'Genu D/S', label: 'Genu D/S' },
+  { value: 'Femur D/S', label: 'Femur D/S' },
+  { value: 'Wrist joint D/S', label: 'Wrist joint D/S' },
+];

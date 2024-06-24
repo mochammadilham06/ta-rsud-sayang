@@ -703,3 +703,13 @@ pre.hljs {
 .swal2-container .swal2-popup.swal2-toast.color-success {
   @apply bg-success;
 }
+
+/* .timeline-container {
+  @apply flex items-center justify-evenly py-5;
+}
+.timeline-item {
+  @apply relative flex flex-col items-center;
+}
+.timeline-item:not(:last-child)::before {
+  @apply absolute left-full top-1/2 h-0.5 w-12 -translate-y-6 transform bg-gray-300 content-[''];
+} */

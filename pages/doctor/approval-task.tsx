@@ -1,29 +1,18 @@
-import React, { FormEvent, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import UseSubsciptionPassangers, { usePostTask, useUpdateTask } from '@/api/task';
+import UseSubsciptionPassangers, { useUpdateTask } from '@/api/task';
 import LoadingOverlay from '@/components/loading';
 import Modal, { ModalProps } from '@/components/modal';
 import { useModal } from '@/hooks/use-modal';
-import { useFormik } from 'formik';
-import Select from 'react-select';
-import { showResponseModal } from '@/components/response-alert';
-import { regisValidation, statusClassMap } from '@/constant/initialValue';
-import { isNull } from 'lodash';
-import Tippy from '@tippyjs/react';
+import { statusClassMap } from '@/constant/initialValue';
 import ResponseModal, { ModalConfirmProps } from '@/components/respon-modal';
 import { useAuth } from '@/utils';
-
-export interface TaskRecord {
-  task_id: string;
-  type: string;
-  user: string;
-  created_by: string;
-  status: string;
-  approved_by?: string;
-}
+import { GetServerSideProps } from 'next';
+import { getCookie } from 'cookies-next';
+import { TaskRecord } from '@/types/task';
 
 export default function ApprovalPage() {
   const dispatch = useDispatch();
@@ -183,3 +172,18 @@ export default function ApprovalPage() {
     </Fragment>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const token = getCookie('users', { req, res });
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};
