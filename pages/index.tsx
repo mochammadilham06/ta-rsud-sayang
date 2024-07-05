@@ -268,16 +268,13 @@ const Index = () => {
               Dashboard
             </Link>
           </li>
-          <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-            <span>Sales</span>
-          </li>
         </ul>
 
         <div className="pt-5">
           <div className="mb-6 grid gap-6 xl:grid-cols-3">
             <div className="panel h-full xl:col-span-2">
               <div className="mb-5 flex items-center justify-between dark:text-white-light">
-                <h5 className="text-lg font-semibold">Revenue</h5>
+                <h5 className="text-lg font-semibold">Graph</h5>
                 <div className="dropdown">
                   <Dropdown
                     offset={[0, 1]}
@@ -304,9 +301,7 @@ const Index = () => {
                   </Dropdown>
                 </div>
               </div>
-              <p className="text-lg dark:text-white-light/90">
-                Total Profit <span className="ml-2 text-primary">$10,840</span>
-              </p>
+
               <div className="relative">
                 <div className="rounded-lg bg-white dark:bg-black">
                   {isMounted ? (
@@ -322,7 +317,7 @@ const Index = () => {
 
             <div className="panel h-full">
               <div className="mb-5 flex items-center">
-                <h5 className="text-lg font-semibold dark:text-white-light">Sales By Category</h5>
+                <h5 className="text-lg font-semibold dark:text-white-light">Most Category</h5>
               </div>
               <div>
                 <div className="rounded-lg bg-white dark:bg-black">
@@ -341,7 +336,7 @@ const Index = () => {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div className="panel h-full w-full">
               <div className="mb-5 flex items-center justify-between">
-                <h5 className="text-lg font-semibold dark:text-white-light">Recent Orders</h5>
+                <h5 className="text-lg font-semibold dark:text-white-light">Recent Task</h5>
               </div>
               <div className="table-responsive">
                 <table>
@@ -442,7 +437,7 @@ const Index = () => {
 
             <div className="panel h-full w-full">
               <div className="mb-5 flex items-center justify-between">
-                <h5 className="text-lg font-semibold dark:text-white-light">Top Selling Product</h5>
+                <h5 className="text-lg font-semibold dark:text-white-light">Top Medical Checkup</h5>
               </div>
               <div className="table-responsive">
                 <table>

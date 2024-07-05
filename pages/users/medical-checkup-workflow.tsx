@@ -42,7 +42,7 @@ export default function CompletedTaskWorkflow() {
   return (
     <Fragment>
       <section>
-        <h2 className="text-2xl font-bold text-gray-700">Pendaftaran Radiolog</h2>
+        <h2 className="text-2xl font-bold text-gray-700">History Proses Radiolog</h2>
       </section>
 
       <section className="py-5">

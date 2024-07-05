@@ -1,16 +1,22 @@
-import { useGetImagesById } from '@/api';
+import { useGetImagesById, useUpdatePost } from '@/api';
 import LoadingOverlay from '@/components/loading';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { getCookie } from 'cookies-next';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { Fragment, useState } from 'react';
+import { FormEvent, Fragment, useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import parse from 'html-react-parser';
 import Lightbox from 'react-18-image-lightbox';
-import 'react-18-image-lightbox/style.css';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import { showResponseModal } from '@/components/response-alert';
+import Button from '@/components/button';
+
+import 'react-18-image-lightbox/style.css';
+import 'react-quill/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function ViewDetailDiagnoses() {
   const dispatch = useDispatch();
@@ -20,8 +26,30 @@ export default function ViewDetailDiagnoses() {
     dispatch(setPageTitle('Upload File'));
   });
   const { dataTask, errorTask, loadingTask } = useGetImagesById(task_id);
+  const { error, loading, postImage } = useUpdatePost();
+
+  console.log({ dataTask });
+  const [form, setForm] = useState<any>(dataTask?.data[0]?.description || '');
+  const idImages = dataTask?.data ? dataTask?.data[0]?.id : '';
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      await postImage({
+        variables: {
+          id: idImages,
+          description: form,
+        },
+      }).then(() => {
+        showResponseModal(true, 'success');
+        router.back();
+      });
+    } catch (error: any) {
+      showResponseModal(false, error?.message);
+    }
+  };
   return (
     <Fragment>
       <div className="panel" id="single_file">
@@ -51,13 +79,18 @@ export default function ViewDetailDiagnoses() {
             {isOpen && <Lightbox mainSrc={`${dataTask?.data[0]?.images}`} onCloseRequest={() => setIsOpen(false)} enableZoom={true} />}
             <div className="pt-10">
               <label htmlFor="description">Description</label>
-              {dataTask && parse(dataTask?.data[0]?.description)}
+              <ReactQuill theme="snow" value={form} onChange={setForm} />
+            </div>
+
+            <div className="flex justify-end py-5">
+              {/* @ts-ignore */}
+              <Button onAction={handleSubmit} title="Submit" variant="primary" />
             </div>
           </div>
         </div>
       </div>
 
-      {loadingTask && <LoadingOverlay />}
+      {(loadingTask || loading) && <LoadingOverlay />}
     </Fragment>
   );
 }

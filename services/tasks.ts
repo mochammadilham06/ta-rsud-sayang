@@ -122,9 +122,21 @@ export const postImages = gql`
 export const getImagesById = gql`
   query MyQuery($task_id: uuid = "") {
     data: rsud_sayang_images(where: { task_id: { _eq: $task_id } }) {
+      id
       task_id
       images
       description
+    }
+  }
+`;
+
+export const updateImages = gql`
+  mutation MyMutation($id: bigint = "", $description: String = "") {
+    data: update_rsud_sayang_images(where: { id: { _eq: $id } }, _set: { description: $description }) {
+      returning {
+        id
+        task_id
+      }
     }
   }
 `;

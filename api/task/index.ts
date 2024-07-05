@@ -1,4 +1,4 @@
-import { getImagesById, getTaskDokter, getTaskPasien, getTaskWithId, postImages, postTask, updateTask } from '@/services';
+import { getImagesById, getTaskDokter, getTaskPasien, getTaskWithId, postImages, postTask, updateImages, updateTask } from '@/services';
 import { useMutation, useQuery, useSubscription } from '@apollo/client';
 import { isUndefined } from 'lodash';
 
@@ -78,5 +78,15 @@ export const useGetImagesById = (task_id: any) => {
     dataTask,
     loadingTask,
     errorTask,
+  };
+};
+
+export const useUpdatePost = () => {
+  const [postImage, { loading, error }] = useMutation(updateImages);
+
+  return {
+    postImage,
+    loading,
+    error,
   };
 };

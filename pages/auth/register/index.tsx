@@ -50,7 +50,7 @@ const Register = () => {
   });
   return (
     <Fragment>
-      <div className={`flex min-h-screen items-center justify-center ${isDark ? 'bg-dark' : 'bg-light'} bg-[url('/assets/images/map.svg')] bg-cover bg-center`}>
+      <div className={`flex min-h-screen items-center justify-center ${isDark ? 'bg-dark' : 'bg-light'} bg-[url('/assets/images/blur-bg-rs.jpg')] bg-cover bg-center`}>
         <div className="panel m-6 w-full max-w-lg sm:w-[480px]">
           <h2 className="mb-3 text-2xl font-bold">Sign Up</h2>
           <p className="mb-7">Enter your email and password to register</p>

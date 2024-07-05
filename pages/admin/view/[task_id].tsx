@@ -1,4 +1,4 @@
-import { usePostImage } from '@/api';
+import { useGetImagesById, usePostImage } from '@/api';
 import Button from '@/components/button';
 import LoadingOverlay from '@/components/loading';
 import { showResponseModal } from '@/components/response-alert';
@@ -6,6 +6,7 @@ import { storage } from '@/config/firebase';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { getCookie } from 'cookies-next';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { size } from 'lodash';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { FormEvent, Fragment } from 'react';
@@ -13,9 +14,6 @@ import { useEffect, useState } from 'react';
 // import 'file-upload-with-preview/dist/file-upload-with-preview.min.css';
 import ImageUploading, { ImageListType } from 'react-images-uploading';
 import { useDispatch } from 'react-redux';
-import 'react-quill/dist/quill.snow.css';
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function UploadResults() {
   const dispatch = useDispatch();
@@ -25,6 +23,7 @@ export default function UploadResults() {
   const [imageUrl, setImageUrl] = useState('');
 
   const { error, loading, postImage } = usePostImage();
+  const { dataTask, errorTask, loadingTask } = useGetImagesById(router?.query?.task_id);
 
   const task_id = router?.query?.task_id;
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function UploadResults() {
   });
 
   const [images, setImages] = useState<any>([]);
-  const [form, setForm] = useState<any>('');
   const maxNumber = 69;
 
   const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
@@ -64,7 +62,7 @@ export default function UploadResults() {
           objects: {
             task_id,
             images: imageUrl,
-            description: form,
+            // description: form,
           },
         },
       }).then(() => {
@@ -104,31 +102,38 @@ export default function UploadResults() {
             <ImageUploading value={images} onChange={onChange} maxNumber={maxNumber}>
               {({ imageList, onImageUpload, onImageRemoveAll, onImageUpdate, onImageRemove, isDragging, dragProps }) => (
                 <div className="upload__image-wrapper">
-                  <button className="custom-file-container__custom-file__custom-file-control" onClick={onImageUpload}>
-                    Choose File...
-                  </button>
-                  &nbsp;
+                  {!imageList ||
+                    (size(dataTask?.data) === 0 && (
+                      <button className="custom-file-container__custom-file__custom-file-control" onClick={onImageUpload}>
+                        Choose File...
+                      </button>
+                    ))}
                   {imageList.map((image, index) => (
                     <div key={index} className="custom-file-container__image-preview relative">
                       <img src={image.dataURL} alt="img" className="m-auto" />
                     </div>
                   ))}
+                  {size(dataTask?.data) > 0 && (
+                    <div className="custom-file-container__image-preview relative">
+                      <img src={dataTask?.data[0].images} alt="img" className="m-auto" />
+                    </div>
+                  )}
                 </div>
               )}
             </ImageUploading>
-            {images.length === 0 ? <img src="/assets/images/file-preview.svg" className="m-auto w-full max-w-md" alt="" /> : ''}
-            <div>
+            {images.length === 0 && size(dataTask?.data) === 0 ? <img src="/assets/images/file-preview.svg" className="m-auto w-full max-w-md" alt="" /> : ''}
+            {/* <div>
               <label htmlFor="description">Description</label>
               <ReactQuill theme="snow" value={form} onChange={setForm} />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
-      {(uploading || loading) && <LoadingOverlay />}
+      {(uploading || loadingTask || loading) && <LoadingOverlay />}
       <div className="flex justify-end py-5">
         {/* @ts-ignore */}
-        <Button onAction={handleSubmit} title="Submit File" variant="primary" />
+        {images.length === 0 || (size(dataTask?.data) === 0 && <Button onAction={handleSubmit} title="Submit File" variant="primary" />)}
       </div>
     </Fragment>
   );

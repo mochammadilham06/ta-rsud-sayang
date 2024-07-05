@@ -45,7 +45,7 @@ export default function ViewDiagnoses() {
   return (
     <Fragment>
       <section>
-        <h2 className="text-2xl font-bold text-gray-700">Upload File Page</h2>
+        <h2 className="text-2xl font-bold text-gray-700">View Diagnoses</h2>
       </section>
 
       <section className="py-5">

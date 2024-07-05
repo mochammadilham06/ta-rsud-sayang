@@ -87,7 +87,7 @@ export default function RegisterMedicalCheckup() {
   return (
     <Fragment>
       <section>
-        <h2 className="text-2xl font-bold text-gray-700">Pendaftaran Radiolog</h2>
+        <h2 className="text-2xl font-bold text-gray-700">Pendaftaran Radiologi</h2>
       </section>
       <section className="flex justify-end py-3">
         {!isShowRegister && (
